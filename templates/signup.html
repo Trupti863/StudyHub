@@ -1,0 +1,71 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - StudyHub</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<header class="top-bar">
+    <div class="logo">
+        <div class="logo-icon">📚</div>
+        <div>
+            <h2>StudyHub</h2>
+            <span>Student Notes</span>
+        </div>
+    </div>
+    <a href="{{ url_for('login') }}" class="back-button">Login</a>
+</header>
+
+<main class="form-page">
+    <div class="form-container">
+
+        <div class="form-heading">
+            <div class="form-icon">+</div>
+            <div>
+                <h1>Create Account</h1>
+                <p>Join StudyHub and manage your study notes.</p>
+            </div>
+        </div>
+
+        {% if error %}
+        <p class="auth-error">{{ error }}</p>
+        {% endif %}
+
+        <form action="{{ url_for('signup') }}" method="POST">
+
+            <label for="username">Username</label>
+            <input type="text" id="username" name="username"
+                   placeholder="Enter your username"
+                   maxlength="100" required>
+
+            <label for="email">Email Address</label>
+            <input type="email" id="email" name="email"
+                   placeholder="Enter your email"
+                   maxlength="150" required>
+
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password"
+                   placeholder="At least 8 characters"
+                   minlength="8" required>
+
+            <div class="form-buttons">
+                <button type="submit" class="save-button">Sign Up</button>
+                <a href="{{ url_for('login') }}" class="cancel-button">Login</a>
+            </div>
+
+        </form>
+
+        <p class="auth-footer">
+            Already have an account?
+            <a href="{{ url_for('login') }}">Login here</a>
+        </p>
+
+    </div>
+</main>
+
+</body>
+</html>

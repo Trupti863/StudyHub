@@ -1,0 +1,75 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Note - StudyHub</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<header class="top-bar">
+    <div class="logo">
+        <div class="logo-icon">📚</div>
+        <div>
+            <h2>StudyHub</h2>
+            <span>Student Notes</span>
+        </div>
+    </div>
+    <a href="{{ url_for('home') }}" class="back-button">← Back</a>
+</header>
+
+<main class="form-page">
+    <div class="form-container">
+
+        <div class="form-heading">
+            <div class="form-icon">✎</div>
+            <div>
+                <h1>Edit Note</h1>
+                <p>Update your note information.</p>
+            </div>
+        </div>
+
+        <form action="{{ url_for('edit_note', id=note.id) }}"
+              method="POST" enctype="multipart/form-data">
+
+            <label for="title">Note Title</label>
+            <input type="text" id="title" name="title"
+                   value="{{ note.title }}" maxlength="100" required>
+
+            <label for="subject">Subject</label>
+            <input type="text" id="subject" name="subject"
+                   value="{{ note.subject }}" maxlength="100" required>
+
+            {% if note.pdf_file %}
+            <div class="current-pdf">
+                <strong>Current PDF</strong>
+                <a href="{{ url_for('view_pdf', filename=note.pdf_file) }}"
+                   target="_blank" rel="noopener noreferrer">
+                    📄 {{ note.pdf_file }}
+                </a>
+            </div>
+            {% endif %}
+
+            <label for="pdf_file">Replace PDF</label>
+
+            <div class="upload-box">
+                <div class="upload-icon">📄</div>
+                <h3>Choose a new PDF</h3>
+                <p>Leave empty to keep the current PDF</p>
+                <input type="file" id="pdf_file" name="pdf_file"
+                       accept=".pdf,application/pdf">
+            </div>
+
+            <div class="form-buttons">
+                <button type="submit" class="save-button">Update Note</button>
+                <a href="{{ url_for('home') }}" class="cancel-button">Cancel</a>
+            </div>
+        </form>
+
+    </div>
+</main>
+
+</body>
+</html>

@@ -1,0 +1,163 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StudyHub</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<header class="top-bar">
+    <div class="logo">
+        <div class="logo-icon">📚</div>
+        <div>
+            <h2>StudyHub</h2>
+            <span>Student Notes</span>
+        </div>
+    </div>
+
+    <div class="header-actions">
+        <a href="{{ url_for('add_note') }}" class="add-button">+ Add Note</a>
+        <span class="user-greeting">
+            Hi, {{ session.get('user_name', 'Student') }}
+        </span>
+        <a href="{{ url_for('logout') }}" class="logout-button"
+           onclick="return confirm('Are you sure you want to logout?')">
+            Logout
+        </a>
+    </div>
+</header>
+
+<div class="container">
+
+    <div class="welcome-section">
+        <h1>Shared Study Notes</h1>
+        <p>Explore study notes shared by you and other students.</p>
+    </div>
+
+    <div class="search-section">
+        <form action="{{ url_for('search') }}" method="GET">
+            <input
+                type="text"
+                name="keyword"
+                placeholder="Search by title, subject or username..."
+                value="{{ keyword|default(request.args.get('keyword', '')) }}"
+            >
+            <button type="submit">Search</button>
+        </form>
+    </div>
+
+    {% if notes %}
+
+    <div class="notes-header">
+        <h2>All Shared Notes</h2>
+        <span>{{ notes|length }} note(s)</span>
+    </div>
+
+    <div class="notes-container">
+
+        {% for note in notes %}
+
+        <div class="note-card">
+
+            <div class="note-top">
+                <div class="pdf-icon">📄</div>
+
+                <div class="note-title">
+                    <h3>{{ note.title }}</h3>
+                    <p>{{ note.subject }}</p>
+                </div>
+            </div>
+
+            <div class="note-info">
+                <p>PDF Study Material</p>
+
+                <small>
+                    Shared by:
+                    {{ note.owner_name|default('Student') }}
+                </small>
+
+                {% if note.created_at %}
+                <br>
+                <small>Added: {{ note.created_at }}</small>
+                {% endif %}
+            </div>
+
+            {% if note.pdf_file %}
+
+            <a
+                href="{{ url_for('view_pdf', filename=note.pdf_file) }}"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="view-pdf"
+            >
+                View PDF
+            </a>
+
+            {% else %}
+
+            <p class="no-pdf">No PDF available</p>
+
+            {% endif %}
+
+            {% if note.user_id|string == session.get('user_id')|string %}
+
+            <div class="card-actions">
+
+                <a
+                    href="{{ url_for('edit_note', id=note.id) }}"
+                    class="edit-button"
+                >
+                    Edit
+                </a>
+
+                <form
+                    action="{{ url_for('delete_note', id=note.id) }}"
+                    method="POST"
+                    style="display: inline;"
+                    onsubmit="return confirmDelete()"
+                >
+                    <button type="submit" class="delete-button">
+                        Delete
+                    </button>
+                </form>
+
+            </div>
+
+            <small class="owner-label">Your note</small>
+
+            {% else %}
+
+            <div class="card-actions">
+                <span class="read-only-label">Read-only access</span>
+            </div>
+
+            {% endif %}
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+    {% else %}
+
+    <div class="empty-message">
+        <div class="empty-icon">📚</div>
+        <h2>No Notes Found</h2>
+        <p>No notes match your search, or no notes have been shared yet.</p>
+        <a href="{{ url_for('add_note') }}" class="add-button">
+            + Add Note
+        </a>
+    </div>
+
+    {% endif %}
+
+</div>
+
+<script src="{{ url_for('static', filename='script.js') }}"></script>
+
+</body>
+</html>
